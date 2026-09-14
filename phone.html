@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>衣然 YIRAN · 我的试穿效果</title>
+  <link rel="stylesheet" href="css/phone.css">
+</head>
+<body>
+
+  <header class="p-header">
+    <div class="logo sm">衣然<i>YIRAN</i></div>
+    <span class="p-header-tag">AI 试穿结果</span>
+  </header>
+
+  <div id="demoBanner" class="demo-banner hidden">
+    未识别到试穿参数，正在为你展示演示示例
+  </div>
+
+  <main class="p-main">
+
+    <!-- 试穿效果 -->
+    <section class="hero-card">
+      <div class="hero-stage" id="heroFigure"></div>
+      <div class="hero-caption">
+        <span class="tag">AI 试穿效果</span>
+        <p id="heroCaption"></p>
+      </div>
+    </section>
+
+    <!-- 商品信息 -->
+    <section class="card product-card">
+      <div class="product-head">
+        <div>
+          <h2 id="pName"></h2>
+          <p class="p-fabric" id="pFabric"></p>
+        </div>
+        <div class="p-price" id="pPrice"></div>
+      </div>
+      <div class="size-row">
+        <span class="size-label">尺码</span>
+        <div class="size-chips" id="sizeChips"></div>
+      </div>
+      <p class="size-note" id="sizeNote"></p>
+    </section>
+
+    <!-- 优惠券 -->
+    <section class="card coupon-card" id="couponCard">
+      <div class="coupon-left">
+        <div class="coupon-amount"><i>¥</i><b id="couponAmount"></b></div>
+        <div class="coupon-name" id="couponName"></div>
+      </div>
+      <button class="coupon-btn" id="couponBtn">立即领取</button>
+    </section>
+
+    <!-- 门店与预约 -->
+    <section class="card store-card">
+      <div class="store-row">
+        <div>
+          <h3 id="storeName"></h3>
+          <p class="store-addr" id="storeAddr"></p>
+        </div>
+        <span class="store-dist">距你 50m · 就在本商场</span>
+      </div>
+      <button class="btn ghost full" id="bookBtn">预约到店试穿 · 导购备好尺码</button>
+      <p class="store-tip">试穿满意再购买，¥30 新客券可直接抵扣</p>
+    </section>
+
+    <!-- 次级动作 -->
+    <section class="link-row">
+      <button class="link-btn" id="cartBtn">加入购物袋</button>
+      <span class="dot">·</span>
+      <button class="link-btn" id="shareBtn">分享给朋友</button>
+      <span class="dot">·</span>
+      <button class="link-btn" id="moreBtn">看看其他款式</button>
+    </section>
+
+    <footer class="p-footer">
+      本页面由你刚才的试穿生成，链接中只包含商品编号、不含任何个人信息；<br>
+      关闭页面后即清除，我们不会留存你的试穿记录。
+    </footer>
+  </main>
+
+  <!-- 底部固定转化条 -->
+  <div class="p-actionbar">
+    <button class="btn ghost" id="cartBtn2">加入购物袋</button>
+    <button class="btn primary" id="bookBtn2">预约到店试穿</button>
+  </div>
+
+  <!-- 预约弹层 -->
+  <div id="bookModal" class="overlay hidden">
+    <div class="overlay-card">
+      <p class="overlay-title">预约到店试穿</p>
+      <p class="overlay-text">选择到店时间，导购将提前为你准备好<br>试穿款与推荐尺码</p>
+      <div class="slot-grid" id="slotGrid"></div>
+      <button class="btn primary full" id="bookConfirm" disabled>确认预约</button>
+      <button class="btn-text" id="bookCancel">暂不预约</button>
+    </div>
+  </div>
+
+  <!-- 预约成功 -->
+  <div id="bookDone" class="overlay hidden">
+    <div class="overlay-card">
+      <div class="done-icon">✓</div>
+      <p class="overlay-title">预约成功</p>
+      <p class="overlay-text" id="bookDoneText"></p>
+      <div class="book-code" id="bookCode"></div>
+      <p class="overlay-sub">到店出示此页面即可，期待你的到来</p>
+      <button class="btn primary full" id="bookDoneOk">好的</button>
+    </div>
+  </div>
+
+  <!-- 轻提示 -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/track.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/phone.js"></script>
+</body>
+</html>

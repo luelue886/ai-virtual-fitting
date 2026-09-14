@@ -1,0 +1,340 @@
+/* ============ 手机端 · 时尚简约暖调 ============ */
+:root {
+  --bg: #FAF7F2;
+  --bg-deep: #F3EDE3;
+  --ink: #2B2B2B;
+  --ink-2: #7A7468;
+  --accent: #E8613C;
+  --green: #2F5D50;
+  --card: #FFFFFF;
+  --line: #E8E0D3;
+  --radius: 18px;
+  --serif: Georgia, 'Times New Roman', 'Songti SC', 'SimSun', serif;
+  --sans: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-bottom: 96px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { font-family: inherit; cursor: pointer; }
+.hidden { display: none !important; }
+
+.logo {
+  font-family: var(--serif);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.logo i {
+  font-style: normal;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: var(--ink-2);
+}
+
+/* ============ 头部 ============ */
+.p-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 12px;
+  position: sticky;
+  top: 0;
+  background: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(10px);
+  z-index: 30;
+}
+.p-header-tag {
+  font-size: 12px;
+  color: var(--green);
+  border: 1px solid var(--green);
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+}
+
+.demo-banner {
+  background: #FFF3E8;
+  color: #A05A2C;
+  font-size: 12px;
+  text-align: center;
+  padding: 8px 16px;
+}
+
+.p-main { padding: 12px 16px 0; max-width: 520px; margin: 0 auto; }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(43, 43, 43, 0.06);
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+/* ============ 试穿效果 ============ */
+.hero-card {
+  background:
+    radial-gradient(70% 46% at 50% 30%, rgba(232, 97, 60, 0.10), transparent 70%),
+    linear-gradient(180deg, #FFFFFF 0%, #F4EEE4 100%);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(43, 43, 43, 0.06);
+  padding: 20px 20px 14px;
+  margin-bottom: 14px;
+  animation: heroIn 0.6s ease;
+}
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.hero-stage { display: flex; justify-content: center; }
+.hero-stage svg { height: 380px; }
+.hero-caption { text-align: center; margin-top: 8px; }
+.hero-caption .tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: var(--green);
+  border: 1px solid var(--green);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+.hero-caption p { font-size: 12px; color: var(--ink-2); margin-top: 8px; }
+
+/* ============ 商品卡 ============ */
+.product-head { display: flex; justify-content: space-between; gap: 14px; }
+.product-head h2 { font-size: 20px; }
+.p-fabric { font-size: 12px; color: var(--ink-2); margin-top: 6px; line-height: 1.7; }
+.p-price { font-size: 22px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+.size-row { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+.size-label { font-size: 13px; color: var(--ink-2); }
+.size-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.size-chip {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+.size-chip.rec {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #FFF4EF;
+  position: relative;
+}
+.size-chip.rec::after {
+  content: '推荐';
+  position: absolute;
+  top: -9px; right: -10px;
+  font-size: 9px;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+.size-note { font-size: 12px; color: var(--green); margin-top: 12px; }
+
+/* ============ 优惠券 ============ */
+.coupon-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 0 50%, transparent 8px, #FFF7F0 8px),
+    radial-gradient(circle at 100% 50%, transparent 8px, #FFF7F0 8px),
+    #FFF7F0;
+  border: 1.5px dashed #F0B79A;
+  box-shadow: none;
+}
+.coupon-left { display: flex; align-items: center; gap: 14px; }
+.coupon-amount { color: var(--accent); font-weight: 700; }
+.coupon-amount i { font-style: normal; font-size: 16px; }
+.coupon-amount b { font-size: 34px; }
+.coupon-name { font-size: 13px; line-height: 1.7; color: #8A5B3F; }
+.coupon-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 20px;
+}
+.coupon-btn.got { background: #E4D9C8; color: #fff; }
+
+/* ============ 门店卡 ============ */
+.store-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.store-row h3 { font-size: 16px; }
+.store-addr { font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+.store-dist {
+  font-size: 11px;
+  color: var(--green);
+  background: rgba(47, 93, 80, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.store-tip { font-size: 12px; color: var(--ink-2); margin-top: 12px; text-align: center; }
+
+/* ============ 按钮 ============ */
+.btn {
+  border: none;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 15px 28px;
+}
+.btn.primary { background: var(--accent); color: #fff; box-shadow: 0 10px 24px rgba(232, 97, 60, 0.28); }
+.btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+.btn.full { width: 100%; margin-top: 16px; }
+.btn:disabled { background: #DDD6CA; color: #fff; box-shadow: none; }
+
+.store-card .btn.full { margin-top: 16px; }
+
+/* ============ 次级链接 ============ */
+.link-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0 26px;
+}
+.link-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.dot { color: #D5CCBC; }
+
+.p-footer {
+  text-align: center;
+  font-size: 11px;
+  color: #A39B8D;
+  line-height: 1.9;
+  padding: 0 24px 20px;
+}
+
+/* ============ 底部转化条 ============ */
+.p-actionbar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+  z-index: 30;
+}
+.p-actionbar .btn { flex: 1; }
+
+/* ============ 弹层 ============ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 43, 43, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.overlay-card {
+  background: var(--bg);
+  border-radius: 26px 26px 0 0;
+  padding: 30px 24px calc(28px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(40px); } to { transform: none; } }
+
+.overlay-title { font-size: 22px; font-weight: 700; }
+.overlay-text { font-size: 14px; color: var(--ink-2); margin-top: 10px; line-height: 1.8; }
+.overlay-sub { font-size: 12px; color: var(--ink-2); margin-top: 12px; }
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 22px 0 4px;
+}
+.slot {
+  border: 1.5px solid var(--line);
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.slot.sel { border-color: var(--accent); color: var(--accent); background: #FFF4EF; }
+
+.btn-text {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-top: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.done-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 30px;
+  line-height: 64px;
+  margin: 0 auto 18px;
+}
+
+.book-code {
+  font-family: var(--serif);
+  font-size: 24px;
+  letter-spacing: 0.14em;
+  background: #fff;
+  border: 1.5px dashed var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 18px;
+  color: var(--ink);
+}
+
+/* ============ Toast ============ */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  background: rgba(43, 43, 43, 0.9);
+  color: #fff;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  z-index: 120;
+  animation: fadeIn 0.25s ease;
+  white-space: nowrap;
+}

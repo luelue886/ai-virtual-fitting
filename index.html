@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>衣然 YIRAN · AI 虚拟试衣镜</title>
+  <link rel="stylesheet" href="css/screen.css">
+</head>
+<body>
+
+  <!-- ============ 吸引页 ============ -->
+  <section id="s-idle" class="screen active">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="idle-center">
+      <div class="logo-xl">衣然<i>YIRAN</i></div>
+      <h1 class="idle-title">AI 虚拟试衣镜</h1>
+      <p class="idle-tagline">三步上身，穿上你的可能</p>
+      <div class="start-pill" id="startBtn">轻触屏幕 · 开始试穿</div>
+      <div class="idle-steps-hint">选形象 › 挑服装 › 生成试穿 › 扫码带走</div>
+    </div>
+    <footer class="idle-privacy">
+      本设备不开启摄像头 · 不采集、不留存任何个人影像 · 点击屏幕即表示同意体验服务
+    </footer>
+  </section>
+
+  <!-- ============ 顶部步骤条（非吸引页显示） ============ -->
+  <header id="topBar" class="top-bar hidden">
+    <div class="logo sm">衣然<i>YIRAN</i></div>
+    <ol class="steps">
+      <li data-step="model">1 · 选择形象</li>
+      <li data-step="garment">2 · 挑选服装</li>
+      <li data-step="done">3 · 试穿效果</li>
+    </ol>
+  </header>
+
+  <!-- ============ 1 选择形象 ============ -->
+  <section id="s-model" class="screen">
+    <h2 class="screen-title">选一个接近你的试穿形象</h2>
+    <p class="screen-sub">不拍照、不留存，试穿随时可以重来</p>
+    <div class="model-grid" id="modelGrid"></div>
+    <div class="bottom-bar">
+      <button class="btn ghost" id="photoEntry">用我自己的照片试试</button>
+      <button class="btn primary xl" id="toGarment" disabled>下一步 · 挑选服装</button>
+    </div>
+  </section>
+
+  <!-- ============ 2 挑选服装 ============ -->
+  <section id="s-garment" class="screen">
+    <div class="garment-layout">
+      <div class="preview-pane">
+        <div class="preview-stage" id="previewStage"></div>
+        <div class="preview-meta" id="previewMeta"></div>
+        <button class="link-btn" id="backToModel">‹ 换个形象</button>
+      </div>
+      <div class="garment-pane">
+        <h2 class="screen-title sm">挑一件今天想试的</h2>
+        <p class="screen-sub sm">点击任意款式，立即上身</p>
+        <div class="garment-grid" id="garmentGrid"></div>
+        <div class="gen-bar">
+          <p class="gen-hint" id="genHint">先在上方选一件服装 · AI 生成约需 5 秒</p>
+          <button class="btn primary xl" id="startGen" disabled>生成 AI 试穿效果</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 生成中 ============ -->
+  <section id="s-generating" class="screen">
+    <div class="gen-stage">
+      <div class="gen-figure-wrap">
+        <div class="gen-figure" id="genFigure"></div>
+        <div class="shimmer"></div>
+      </div>
+      <div class="gen-info">
+        <p class="gen-step-text" id="genStepText">正在准备…</p>
+        <div class="progress"><div class="progress-bar" id="genProgress"></div></div>
+        <p class="gen-eta">预计几秒完成 · 生成过程只在本机进行，不上传任何照片</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 结果 ============ -->
+  <section id="s-result" class="screen">
+    <div class="result-layout">
+      <div class="result-stage"><div class="result-figure" id="resultFigure"></div></div>
+      <aside class="result-side">
+        <div class="result-tag">AI 试穿效果</div>
+        <h2 class="result-name" id="resultName"></h2>
+        <p class="result-meta" id="resultMeta"></p>
+        <div class="qr-box">
+          <div class="qr-code" id="qrCode"></div>
+          <div class="qr-tip">
+            <strong>扫码带走试穿效果</strong>
+            <span>手机查看商品详情 · 领取新客优惠</span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn primary" id="changeGarment">换一件</button>
+          <button class="btn ghost" id="changeModel">换个形象</button>
+        </div>
+        <p class="privacy-note">试穿数据仅存于本机，离开即自动清除</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ 生成失败 ============ -->
+  <section id="s-error" class="screen">
+    <div class="error-stage">
+      <div class="error-icon">
+        <svg viewBox="0 0 64 64" width="72" height="72">
+          <path d="M32 6 v6" stroke="#E8613C" stroke-width="3" stroke-linecap="round"/>
+          <path d="M32 12 C32 12 14 26 14 42 a18 14 0 0 0 36 0 C50 26 32 12 32 12 Z"
+                fill="none" stroke="#E8613C" stroke-width="3" opacity="0.9"/>
+          <line x1="14" y1="40" x2="50" y2="40" stroke="#E8613C" stroke-width="3" opacity="0.5"/>
+        </svg>
+      </div>
+      <h2 class="error-title">哎呀，AI 小助手开了个小差</h2>
+      <p class="error-text">刚才的试穿效果没有生成成功，<br>再试一次就好，也可以先换一件看看</p>
+      <div class="error-actions">
+        <button class="btn primary xl" id="retryGen">再试一次</button>
+        <button class="btn ghost xl" id="errorChangeGarment">换一件试试</button>
+      </div>
+      <p class="privacy-note">请放心：没有任何数据被保存</p>
+    </div>
+  </section>
+
+  <!-- ============ 闲置倒计时 ============ -->
+  <div id="idleOverlay" class="overlay hidden">
+    <div class="overlay-card">
+      <p class="overlay-title">还在吗？</p>
+      <p class="overlay-text">长时间未操作，即将返回首页<br>本次试穿数据将自动清除</p>
+      <div class="countdown" id="idleCountdown">10</div>
+      <button class="btn primary" id="stayBtn">继续试穿</button>
+    </div>
+  </div>
+
+  <!-- ============ 拍照路径 · 隐私授权弹窗 ============ -->
+  <div id="photoModal" class="overlay hidden">
+    <div class="overlay-card privacy-card">
+      <p class="overlay-title">想用自己的照片试穿？</p>
+      <ul class="privacy-list">
+        <li><b>仅本机处理</b>照片不会上传到任何服务器</li>
+        <li><b>试后即删</b>试穿完成或退出后立即自动删除</li>
+        <li><b>最小使用</b>仅用于生成试穿效果，不作他用</li>
+      </ul>
+      <p class="privacy-dev-note">该能力将在正式版上线，当前原型请先用预设形象体验完整流程</p>
+      <button class="btn primary" id="photoOk">知道了，先用预设形象</button>
+    </div>
+  </div>
+
+  <!-- ============ 演示控制（评委演示失败/超时用） ============ -->
+  <button id="demoGear" class="demo-gear" title="演示控制">演示</button>
+  <div id="demoPanel" class="demo-panel hidden">
+    <p class="demo-title">演示控制</p>
+    <label class="demo-row"><input type="checkbox" id="demoFail">下一次生成模拟失败</label>
+    <p class="demo-tip">提示：按 F 键快速切换；闲置 45 秒可演示超时清除</p>
+    <button class="btn ghost sm" id="demoReset">回到首页</button>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/track.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/vendor/qrcode.min.js"></script>
+  <script src="js/screen.js"></script>
+</body>
+</html>
