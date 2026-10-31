@@ -338,3 +338,8 @@ button { font-family: inherit; cursor: pointer; }
   animation: fadeIn 0.25s ease;
   white-space: nowrap;
 }
+
+/* ============ 真实试穿结果图（大屏生成、扫码带回） ============ */
+.hero-stage img {
+  height: 380px; max-width: 100%; object-fit: contain; border-radius: 14px;
+}

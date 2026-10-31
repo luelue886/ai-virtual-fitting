@@ -10,6 +10,7 @@
   const qs = new URLSearchParams(location.search);
   const model = MODELS.find((m) => m.id === qs.get('m'));
   const garment = GARMENTS.find((g) => g.id === qs.get('c'));
+  const resultId = qs.get('r'); // 大屏真实生成结果编号（本地后端回放，云端 24h 失效不受影响）
   const isDemo = !model || !garment;
   const M = model || MODELS[1];
   const G = garment || GARMENTS[2];
@@ -141,6 +142,19 @@
     toast('完整系列请到店选购 · 原型演示');
   });
 
+  // 真实生成结果：优先展示大屏生成的照片，取不到（后端未启动/已清理）保持 SVG 插画
+  function loadRealResult() {
+    if (!resultId) return;
+    const img = new Image();
+    img.alt = 'AI 试穿效果';
+    img.onload = () => {
+      $('#heroFigure').innerHTML = '';
+      $('#heroFigure').appendChild(img);
+    };
+    img.src = '/api/result/' + encodeURIComponent(resultId);
+  }
+
   render();
-  track('tryon_result_view', { model: M.id, garment: G.id, demo: isDemo });
+  loadRealResult();
+  track('tryon_result_view', { model: M.id, garment: G.id, demo: isDemo, real: !!resultId });
 })();

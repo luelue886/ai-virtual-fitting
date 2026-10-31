@@ -674,3 +674,15 @@ button { font-family: inherit; cursor: pointer; }
   .start-pill { font-size: 18px; padding: 16px 36px; margin-top: 32px; }
 }
 
+
+/* ============ 真实照片素材（assets/ 就位后叠放在插画之上，加载失败自动回退插画） ============ */
+.model-card .fig { position: relative; overflow: hidden; border-radius: 12px; background: #F4EEE4; }
+.model-card .fig img.photo {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top center;
+}
+.garment-card .thumb { position: relative; overflow: hidden; }
+.garment-card .thumb img.photo {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.result-figure img { height: 100%; max-width: 100%; object-fit: contain; border-radius: 12px; }

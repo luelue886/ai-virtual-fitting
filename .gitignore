@@ -1,2 +1,5 @@
 .claude/
 dist/
+.env
+__pycache__/
+server/results/
