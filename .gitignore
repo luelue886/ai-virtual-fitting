@@ -1,2 +1,7 @@
 .claude/
 dist/
+.env
+__pycache__/
+server/results/
+.video-tmp/
+server_run.log

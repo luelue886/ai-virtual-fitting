@@ -17,10 +17,17 @@
 
   // ---------- 渲染 ----------
 
+  // 照片叠放在 SVG 插画上层，加载失败自动移除回退插画（素材未就位不影响演示）
+  // 素材未就位（assetsReady=false）时不加载照片，避免大量 404
+  function photoOverlay(src, alt) {
+    if (!GeneratorInfo.assetsReady) return '';
+    return `<img class="photo" src="${src}" alt="${alt}" loading="lazy" onerror="this.remove()">`;
+  }
+
   function renderModelCards() {
     $('#modelGrid').innerHTML = MODELS.map((m) => `
       <button class="model-card${state.model && state.model.id === m.id ? ' sel' : ''}" data-id="${m.id}">
-        <div class="fig">${ART.composeFitting(m, GARMENTS[0], true)}</div>
+        <div class="fig">${ART.composeFitting(m, GARMENTS[0], true)}${m.photo ? photoOverlay(m.photo, m.name) : ''}</div>
         <h3>${m.name}</h3>
         <p class="m-desc">${m.desc}</p>
         <div class="m-tags">${m.tags.map((t) => `<span>${t}</span>`).join('')}</div>
@@ -31,7 +38,7 @@
   function renderGarmentCards() {
     $('#garmentGrid').innerHTML = GARMENTS.map((g) => `
       <button class="garment-card${state.garment && state.garment.id === g.id ? ' sel' : ''}" data-id="${g.id}">
-        <div class="thumb">${ART.garmentThumb(g)}</div>
+        <div class="thumb">${ART.garmentThumb(g)}${g.topImage ? photoOverlay(g.topImage, g.name) : ''}</div>
         <div class="g-info">
           <div class="g-name">${g.name}</div>
           <div class="g-cat">${g.category} · ${g.fabric}</div>
@@ -55,14 +62,14 @@
         <p class="p-name">${state.garment.name}</p>
         <p class="p-info">${state.garment.fabric} · ${state.garment.fitNote}</p>`;
       $('#startGen').disabled = false;
-      $('#genHint').textContent = 'AI 生成约需 5 秒 · 生成完成可扫码带走';
+      $('#genHint').textContent = `${genEtaText()} · 生成完成可扫码带走`;
     } else {
       $('#previewStage').innerHTML =
         `<div class="placeholder-tip">点击右侧任意款式，立即上身预览</div>`;
       $('#previewMeta').innerHTML = `<p class="p-name">${state.model.name} · ${state.model.desc}</p>
         <p class="p-info">等待选择服装</p>`;
       $('#startGen').disabled = true;
-      $('#genHint').textContent = '先在上方选一件服装 · AI 生成约需 5 秒';
+      $('#genHint').textContent = `先在上方选一件服装 · ${genEtaText()}`;
     }
   }
 
@@ -82,40 +89,69 @@
 
   // ---------- 生成流程 ----------
 
+  // 生成耗时文案随模式切换（真实 AI 10-30s / Mock 约 5s）
+  function genEtaText() {
+    return Generator.name === 'api' ? 'AI 生成约需 20–60 秒' : 'AI 生成约需 5 秒';
+  }
+
   function startGeneration() {
     if (!state.model || !state.garment) return;
-    track('generate_start', { model: state.model.id, garment: state.garment.id });
+    track('generate_start', { model: state.model.id, garment: state.garment.id, mode: Generator.name });
     go('generating');
     $('#genFigure').innerHTML = ART.composeFitting(state.model, state.garment, true);
     $('#genProgress').style.width = '4%';
     $('#genStepText').textContent = '正在准备…';
+    $('#genEta').textContent = Generator.name === 'api'
+      ? '预计 20–60 秒完成 · 预设形象为授权模特图，仅上传至云端试衣服务生成效果，不涉及顾客本人影像'
+      : '预计几秒完成 · 演示模式，生成过程在本机模拟';
 
     Generator.generate(state.model, state.garment, (text, pct) => {
       $('#genStepText').textContent = text;
       $('#genProgress').style.width = pct + '%';
     }, { fail: state.failArmed })
-      .then(() => {
-        track('generate_success');
+      .then((result) => {
+        // 防御：若会话已被清（如闲置超时竞态），静默丢弃结果而不是崩溃进失败页
+        if (!state.model || !state.garment || state.screen === 'idle') return;
+        track('generate_success', { mode: Generator.name });
         state.failArmed = false;
         $('#demoFail').checked = false;
-        showResult();
+        showResult(result);
       })
       .catch(() => {
-        track('generate_fail');
+        track('generate_fail', { mode: Generator.name });
         go('error');
       });
   }
 
-  function showResult() {
-    $('#resultFigure').innerHTML = ART.composeFitting(state.model, state.garment);
+  function showResult(result) {
+    const fig = $('#resultFigure');
+    if (result && result.imageUrl) {
+      // 真实生成：先铺轮廓占位，图片就绪后替换（避免闪白）
+      fig.innerHTML = ART.composeFitting(state.model, state.garment, true);
+      const img = new Image();
+      img.alt = 'AI 试穿效果';
+      img.onload = () => {
+        fig.innerHTML = '';
+        fig.appendChild(img);
+        track('result_image_shown');
+      };
+      img.onerror = () => { fig.innerHTML = ART.composeFitting(state.model, state.garment); };
+      img.src = result.imageUrl;
+    } else {
+      fig.innerHTML = ART.composeFitting(state.model, state.garment);
+    }
     $('#resultName').textContent = state.garment.name;
     $('#resultMeta').innerHTML =
       `试穿形象：${state.model.name}（${state.model.desc}）<br>` +
       `${state.garment.fabric} · ${state.garment.fitNote}`;
 
-    // 二维码：链接 + 试衣参数，参数只含商品编号，不含任何个人信息
-    const base = location.href.replace(/index\.html(\?.*)?(#.*)?$/, '');
-    const url = `${base}phone.html?m=${state.model.id}&c=${state.garment.id}`;
+    // 二维码：参数只含商品与结果编号,不含任何个人信息。
+    // 本地后端场景用局域网地址(手机扫码可达;localhost 地址手机访问的是手机自身),
+    // 纯静态部署(如 GitHub Pages)回退当前页面地址。
+    const base = (GeneratorInfo.lanUrl || location.href.replace(/index\.html(\?.*)?(#.*)?$/, ''))
+      .replace(/\/+$/, '');
+    const r = result && result.taskId ? `&r=${encodeURIComponent(result.taskId)}` : '';
+    const url = `${base}/phone.html?m=${state.model.id}&c=${state.garment.id}${r}`;
     $('#qrCode').innerHTML = '';
     new QRCode($('#qrCode'), {
       text: url,
@@ -149,7 +185,9 @@
     clearTimeout(idleTimer);
     hideOverlay('#idleOverlay');
     clearInterval(countdownTimer);
-    if (state.screen === 'idle') return;
+    // generating 屏不判定闲置：真实 AI 生成需 20-90 秒，用户在等系统而非离开，
+    // 此时弹倒计时/清会话会把即将到达的结果打回失败页（Mock 5 秒不暴露此问题）
+    if (state.screen === 'idle' || state.screen === 'generating') return;
     idleTimer = setTimeout(showIdleOverlay, IDLE_MS);
   }
 
@@ -263,4 +301,11 @@
   renderModelCards();
   renderGarmentCards();
   track('screen_view', { screen: 'idle' });
+
+  // 后端探测完成后刷新生成耗时提示与素材卡片（api/mock 两套文案；重渲染保留已选高亮）
+  GeneratorReady.then(() => {
+    if (state.screen !== 'idle') updatePreview();
+    renderModelCards();
+    renderGarmentCards();
+  });
 })();
